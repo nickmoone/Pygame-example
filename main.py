@@ -14,7 +14,7 @@ def create_animation(path):
     return list(map(pygame.Surface.convert_alpha, list(map(pygame.image.load, glob.glob(path)))))
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, xpos=0, ypos=0):
+    def __init__(self, xpos=0, ypos=0, move_keys=[pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]):
         super().__init__()
         
         # Load all player animations.
@@ -40,10 +40,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = xpos
         self.rect.y = ypos
 
+        # Set movement keys.
+        self.move_keys = move_keys
+
 
     """ Update player image to next image in animation.
     """
-    def update(self):
+    def animate(self):
         self.animation_counter += 1
 
         # Go to next step in animation if interval is reached.
@@ -59,20 +62,34 @@ class Player(pygame.sprite.Sprite):
     """
     def handle_movement(self, move_dist=10):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
+        if keys[self.move_keys[0]]:
             self.rect.y -= move_dist
             self.cur_images = self.up_images
-        elif keys[pygame.K_DOWN]:
+        elif keys[self.move_keys[1]]:
             self.rect.y += move_dist
             self.cur_images = self.down_images
-        elif keys[pygame.K_LEFT]:
+        elif keys[self.move_keys[2]]:
             self.rect.x -= move_dist
             self.cur_images = self.left_images
-        elif keys[pygame.K_RIGHT]:
+        elif keys[self.move_keys[3]]:
             self.rect.x += move_dist
             self.cur_images = self.right_images
         else:
             self.cur_images = self.idle_images
+
+        # Wrap player around screen.
+        if self.rect.x > WIDTH:
+            self.rect.x = -self.image.get_width()
+        elif self.rect.x < 0 - self.image.get_width():
+            self.rect.x = WIDTH
+        elif self.rect.y > HEIGHT:
+            self.rect.y = -self.image.get_height()
+        elif self.rect.y < 0 - self.image.get_height():
+            self.rect.y = HEIGHT
+
+    def update(self):
+        self.handle_movement(10)
+        self.animate()
 
 def main():
     # Initialize game.
@@ -85,6 +102,10 @@ def main():
     player = Player(0, 0)
     all_sprites = pygame.sprite.Group(player)
 
+
+    player2 = Player(500, 0, [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d])
+    all_sprites.add(player2)
+
     # Main game loop.
     running = True
     while running:
@@ -92,19 +113,8 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        player.handle_movement(10)
-
-        # Wrap player around screen.
-        if player.rect.x > WIDTH:
-            player.rect.x = -player.image.get_width()
-        elif player.rect.x < 0 - player.image.get_width():
-            player.rect.x = WIDTH
-        elif player.rect.y > HEIGHT:
-            player.rect.y = -player.image.get_height()
-        elif player.rect.y < 0 - player.image.get_height():
-            player.rect.y = HEIGHT
-
         player.update()
+        player2.update()
 
         screen.fill(WHITE)
         all_sprites.draw(screen)

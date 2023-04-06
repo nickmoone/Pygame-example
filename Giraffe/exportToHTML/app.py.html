@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>app.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #808080;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+app.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">pygame.display</span>
+
+<span class="s0">from </span><span class="s1">settings </span><span class="s0">import </span><span class="s1">*</span>
+<span class="s0">from </span><span class="s1">rizzle </span><span class="s0">import </span><span class="s1">*</span>
+
+<span class="s1">pygame.init()</span>
+
+<span class="s1">BG = (</span><span class="s2">64</span><span class="s0">, </span><span class="s2">64</span><span class="s0">, </span><span class="s2">64</span><span class="s1">)</span>
+<span class="s3"># idle image</span>
+<span class="s1">screen = pygame.display.set_mode((</span><span class="s2">1000</span><span class="s0">, </span><span class="s2">800</span><span class="s1">))</span>
+<span class="s1">idle_image = pygame.image.load(</span><span class="s4">'player/Owlet_Monster_Idle_4.png'</span><span class="s1">).convert_alpha()</span>
+<span class="s1">idle_sheet = SpriteSheet(idle_image)</span>
+
+<span class="s3"># run image</span>
+<span class="s1">run_image = pygame.image.load(</span><span class="s4">'player/Owlet_Monster_Run_6.png'</span><span class="s1">).convert_alpha()</span>
+<span class="s1">run_sheet = SpriteSheet(run_image)</span>
+
+<span class="s3"># jump image</span>
+<span class="s1">jump_image = pygame.image.load(</span><span class="s4">'player/Owlet_Monster_Jump_8.png'</span><span class="s1">).convert_alpha()</span>
+<span class="s1">jump_sheet = SpriteSheet(jump_image)</span>
+
+<span class="s3"># idle animation setup</span>
+<span class="s1">animation_idle_list = []</span>
+<span class="s1">idle_steps = </span><span class="s2">4</span>
+
+
+<span class="s3"># animation setup</span>
+<span class="s1">last_update = pygame.time.get_ticks()</span>
+<span class="s1">animation_cooldown = </span><span class="s2">200</span>
+<span class="s1">frame = </span><span class="s2">0</span>
+
+<span class="s1">idle_sheet.animation(idle_image</span><span class="s0">, </span><span class="s2">4</span><span class="s1">)</span>
+<span class="s1">idle_list = []</span>
+<span class="s1">idle_list = idle_sheet.animation(idle_image</span><span class="s0">, </span><span class="s2">4</span><span class="s1">)</span>
+
+<span class="s1">run_list = []</span>
+<span class="s1">run_list = run_sheet.animation(run_image</span><span class="s0">, </span><span class="s2">6</span><span class="s1">)</span>
+
+<span class="s1">run = </span><span class="s0">True</span>
+<span class="s0">while </span><span class="s1">run:</span>
+
+    <span class="s1">screen.fill(BG)</span>
+
+    <span class="s1">current_time = pygame.time.get_ticks()</span>
+    <span class="s0">if </span><span class="s1">current_time - last_update &gt;= animation_cooldown:</span>
+        <span class="s1">frame += </span><span class="s2">1</span>
+        <span class="s1">last_update = current_time</span>
+        <span class="s0">if </span><span class="s1">frame &gt;= len(idle_list):</span>
+            <span class="s1">frame = </span><span class="s2">0</span>
+
+    <span class="s3"># screen.blit(animation_idle_list[frame], (0, 0))</span>
+
+    <span class="s3"># event handler</span>
+    <span class="s0">for </span><span class="s1">event </span><span class="s0">in </span><span class="s1">pygame.event.get():</span>
+        <span class="s0">if </span><span class="s1">event.type == pygame.QUIT:</span>
+            <span class="s1">run = </span><span class="s0">False</span>
+        <span class="s0">if </span><span class="s1">event.type == pygame.KEYDOWN:</span>
+            <span class="s0">if </span><span class="s1">event.key == pygame.K_SPACE:</span>
+                <span class="s1">run_list = run_sheet.animation(run_image</span><span class="s0">, </span><span class="s2">6</span><span class="s1">)</span>
+                <span class="s1">screen.blit(run_list[frame]</span><span class="s0">, </span><span class="s1">player_pos)</span>
+
+        <span class="s0">if </span><span class="s1">event.type == pygame.KEYUP:</span>
+            <span class="s1">idle_list = idle_sheet.animation(idle_image</span><span class="s0">, </span><span class="s2">4</span><span class="s1">)</span>
+            <span class="s1">screen.blit(idle_list[frame]</span><span class="s0">, </span><span class="s1">player_pos)</span>
+    <span class="s1">screen.blit(idle_list[frame]</span><span class="s0">, </span><span class="s1">player_pos)</span>
+
+
+    <span class="s1">clock.tick(</span><span class="s2">60</span><span class="s1">)</span>
+
+    <span class="s1">pygame.display.update()</span>
+
+<span class="s1">pygame.quit()</span>
+</pre>
+</body>
+</html>
