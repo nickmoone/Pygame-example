@@ -1,5 +1,4 @@
 import pygame
-import glob
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -7,25 +6,46 @@ WHITE = (255, 255, 255)
 WIDTH = 1200
 HEIGHT = 900
 
-""" Creates an animation which is a list of images.
-    The animation is made up of all the images at the given path.
+
+""" Convert a spritesheet to a single frame image.
 """
-def create_animation(path):
-    return list(map(pygame.Surface.convert_alpha, list(map(pygame.image.load, glob.glob(path)))))
+def get_spritesheet_frame(sheet, frame_nr, width, height, scale):
+    image = pygame.Surface((width, height), pygame.SRCALPHA).convert_alpha()
+    image.blit(sheet, (0,0), (frame_nr*width, 0, width, height))
+    image = pygame.transform.scale(image, (width*scale, height*scale))
+    return image
+
+""" Create an animation which is a list of images.
+"""
+def create_animation(path, n_steps, width, height, scale):
+    sheet = pygame.image.load(path).convert_alpha()
+
+    # Convert sheet to animation.
+    animation_list = []
+    for frame_nr in range(n_steps):
+        animation_list.append(get_spritesheet_frame(sheet, frame_nr, width, height, scale))
+
+    return animation_list
+    
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, xpos=0, ypos=0, move_keys=[pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]):
         super().__init__()
         
         # Load all player animations.
-        self.idle_images = create_animation("idle/*.png")
-        self.up_images = create_animation("up/*.png")
-        self.down_images = create_animation("down/*.png")
-        self.left_images = create_animation("left/*.png")
-        self.right_images = create_animation("right/*.png")
+        self.idle_images = create_animation("player_img/Owlet_Monster_Idle_4.png", 4, 32, 32, 3)
+        self.up_images = create_animation("player_img/Owlet_Monster_Jump_8.png", 8, 32, 32, 3)
+        self.down_images = self.up_images
+        self.right_images = create_animation("player_img/Owlet_Monster_Run_6.png", 6, 32, 32, 3)
+
+        self.down_images.reverse()
+
+        self.left_images = []
+        for image in self.right_images:
+            self.left_images.append(pygame.transform.flip(image, True, False))
 
         # Set animation interval.
-        self.animation_interval = 10
+        self.animation_interval = 20
         self.animation_counter = 0
 
         # Set player image state.
@@ -62,20 +82,25 @@ class Player(pygame.sprite.Sprite):
     """
     def handle_movement(self, move_dist=10):
         keys = pygame.key.get_pressed()
-        if keys[self.move_keys[0]]:
+        if keys[self.move_keys[0]]:  # Up
             self.rect.y -= move_dist
             self.cur_images = self.up_images
-        elif keys[self.move_keys[1]]:
+            self.animation_interval = 20
+        elif keys[self.move_keys[1]]:  # Down
             self.rect.y += move_dist
             self.cur_images = self.down_images
-        elif keys[self.move_keys[2]]:
+            self.animation_interval = 20
+        elif keys[self.move_keys[2]]:  # Left
             self.rect.x -= move_dist
             self.cur_images = self.left_images
-        elif keys[self.move_keys[3]]:
+            self.animation_interval = 8
+        elif keys[self.move_keys[3]]:  # Right
             self.rect.x += move_dist
             self.cur_images = self.right_images
+            self.animation_interval = 8
         else:
             self.cur_images = self.idle_images
+            self.animation_interval = 20
 
         # Wrap player around screen.
         if self.rect.x > WIDTH:
@@ -88,7 +113,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = HEIGHT
 
     def update(self):
-        self.handle_movement(10)
+        self.handle_movement(5)
         self.animate()
 
 def main():
@@ -102,9 +127,11 @@ def main():
     player = Player(0, 0)
     all_sprites = pygame.sprite.Group(player)
 
-
     player2 = Player(500, 0, [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d])
     all_sprites.add(player2)
+
+    player3 = Player(0, 500, [pygame.K_i, pygame.K_k, pygame.K_j, pygame.K_l])
+    all_sprites.add(player3)
 
     # Main game loop.
     running = True
@@ -115,12 +142,13 @@ def main():
 
         player.update()
         player2.update()
+        player3.update()
 
         screen.fill(WHITE)
         all_sprites.draw(screen)
         pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick(100)
 
     pygame.quit()
 
