@@ -6,6 +6,8 @@ WHITE = (255, 255, 255)
 WIDTH = 1200
 HEIGHT = 900
 
+FRAMERATE = 100
+
 
 """ Convert a spritesheet to a single frame image.
 """
@@ -14,6 +16,7 @@ def get_spritesheet_frame(sheet, frame_nr, width, height, scale):
     image.blit(sheet, (0,0), (frame_nr*width, 0, width, height))
     image = pygame.transform.scale(image, (width*scale, height*scale))
     return image
+
 
 """ Create an animation which is a list of images.
 """
@@ -26,7 +29,6 @@ def create_animation(path, n_steps, width, height, scale):
         animation_list.append(get_spritesheet_frame(sheet, frame_nr, width, height, scale))
 
     return animation_list
-    
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, xpos=0, ypos=0, move_keys=[pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]):
@@ -35,17 +37,15 @@ class Player(pygame.sprite.Sprite):
         # Load all player animations.
         self.idle_images = create_animation("player_img/Owlet_Monster_Idle_4.png", 4, 32, 32, 3)
         self.up_images = create_animation("player_img/Owlet_Monster_Jump_8.png", 8, 32, 32, 3)
-        self.down_images = self.up_images
+        self.down_images = self.idle_images
         self.right_images = create_animation("player_img/Owlet_Monster_Run_6.png", 6, 32, 32, 3)
-
-        self.down_images.reverse()
 
         self.left_images = []
         for image in self.right_images:
             self.left_images.append(pygame.transform.flip(image, True, False))
 
         # Set animation interval.
-        self.animation_interval = 20
+        self.animation_interval = 100
         self.animation_counter = 0
 
         # Set player image state.
@@ -80,27 +80,27 @@ class Player(pygame.sprite.Sprite):
 
     """ Handle player movement according to button pressed.
     """
-    def handle_movement(self, move_dist=10):
+    def handle_movement(self, move_dist=2):
         keys = pygame.key.get_pressed()
         if keys[self.move_keys[0]]:  # Up
             self.rect.y -= move_dist
             self.cur_images = self.up_images
-            self.animation_interval = 20
+            self.animation_interval = 0.1*FRAMERATE
         elif keys[self.move_keys[1]]:  # Down
             self.rect.y += move_dist
             self.cur_images = self.down_images
-            self.animation_interval = 20
+            self.animation_interval = 0.05*FRAMERATE
         elif keys[self.move_keys[2]]:  # Left
             self.rect.x -= move_dist
             self.cur_images = self.left_images
-            self.animation_interval = 8
+            self.animation_interval = 0.05*FRAMERATE
         elif keys[self.move_keys[3]]:  # Right
             self.rect.x += move_dist
             self.cur_images = self.right_images
-            self.animation_interval = 8
+            self.animation_interval = 0.05*FRAMERATE
         else:
             self.cur_images = self.idle_images
-            self.animation_interval = 20
+            self.animation_interval = 0.15*FRAMERATE
 
         # Wrap player around screen.
         if self.rect.x > WIDTH:
@@ -113,7 +113,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = HEIGHT
 
     def update(self):
-        self.handle_movement(5)
+        self.handle_movement()
         self.animate()
 
 def main():
@@ -123,7 +123,7 @@ def main():
     pygame.display.set_caption("Sicke game")
     clock = pygame.time.Clock()
 
-    # Initialize player.
+    # Initialize players.
     player = Player(0, 0)
     all_sprites = pygame.sprite.Group(player)
 
@@ -148,7 +148,7 @@ def main():
         all_sprites.draw(screen)
         pygame.display.flip()
 
-        clock.tick(100)
+        clock.tick(FRAMERATE)
 
     pygame.quit()
 
