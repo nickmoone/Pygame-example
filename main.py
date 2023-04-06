@@ -4,8 +4,8 @@ import glob
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
-WIDTH = 800
-HEIGHT = 800
+WIDTH = 1200
+HEIGHT = 900
 
 """ Creates an animation which is a list of images.
     The animation is made up of all the images at the given path.
@@ -14,7 +14,7 @@ def create_animation(path):
     return list(map(pygame.Surface.convert_alpha, list(map(pygame.image.load, glob.glob(path)))))
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, xpos=0, ypos=0):
         super().__init__()
         
         # Load all player animations.
@@ -33,7 +33,13 @@ class Player(pygame.sprite.Sprite):
         self.cur_images = self.idle_images
         self.image = self.cur_images[self.anim_state]
 
+
         self.rect = self.image.get_rect()
+
+        # Set player position.
+        self.rect.x = xpos
+        self.rect.y = ypos
+
 
     """ Update player image to next image in animation.
     """
@@ -76,7 +82,7 @@ def main():
     clock = pygame.time.Clock()
 
     # Initialize player.
-    player = Player()
+    player = Player(0, 0)
     all_sprites = pygame.sprite.Group(player)
 
     # Main game loop.
