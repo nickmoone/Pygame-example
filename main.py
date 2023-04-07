@@ -47,6 +47,13 @@ def init_gameboard():
     running = True
     clock_timer = None
     while running:
+        # Stop if quit event is received.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        all_sprites.update()
+
         clock_now = datetime.now()
 
         # Add apple every few seconds.
@@ -56,14 +63,6 @@ def init_gameboard():
             apple_sprites.append(apple)
 
             clock_timer = clock_now + timedelta(seconds = 8)
-
-        # Stop if quit event is received.
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        # Update all sprites in all_sprites container.
-        all_sprites.update()
 
         # Redraw / update screen.
         screen.fill(WHITE)
