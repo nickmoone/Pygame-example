@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from settings import *
 from player import Player
 from item import Item
+from platformbar import PlatformBar
 
 
 """ Create n_players and add to all_sprites container.
@@ -29,6 +30,18 @@ def add_players(all_sprites, n_players=1):
 
     return players
 
+def add_platformbars(all_sprites):
+    platformbars = pygame.sprite.Group()
+
+    locations = [(0, 200), (0, 500), (0, 800), (734, 200), (734, 500), (734, 800)]
+
+    for location in locations:
+        platformbar = PlatformBar("platform_img/black_bar.png", location[0], location[1])
+        all_sprites.add(platformbar)
+        platformbars.add(platformbar)
+
+    return platformbars
+
 
 def init_gameboard():
     # Initialize game.
@@ -42,6 +55,9 @@ def init_gameboard():
 
     player_sprites = add_players(all_sprites, 3)
     apple_sprites = pygame.sprite.Group()
+
+    # Add black bar sprite to middle of screen.
+    platformbar_sprites = add_platformbars(all_sprites)
 
     # Main game loop.
     running = True
@@ -61,6 +77,12 @@ def init_gameboard():
         # Make player fall to bottom of screen.
         for player in player_sprites:
             player.rect.y += GRAVITY
+            # Stop falling at platoformbar.
+            for platformbar in platformbar_sprites:
+                if pygame.sprite.collide_rect(player, platformbar):
+                    player.rect.y = platformbar.rect.y - player.rect.height
+
+            # Stop falling at bottom.
             if player.rect.y >= HEIGHT - player.rect.height:
                 player.rect.y = HEIGHT - player.rect.height
 
