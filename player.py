@@ -12,7 +12,6 @@ class Player(pygame.sprite.Sprite):
         self.up_images = create_animation("player_img/Owlet_Monster_Jump_8.png", 8, 32, 32, 3)
         self.down_images = self.idle_images
         self.right_images = create_animation("player_img/Owlet_Monster_Run_6.png", 6, 32, 32, 3)
-
         self.left_images = []
         for image in self.right_images:
             self.left_images.append(pygame.transform.flip(image, True, False))
@@ -39,6 +38,8 @@ class Player(pygame.sprite.Sprite):
         self.name = player_name
         self.score = 0
 
+        self.in_jump = 0
+
     """ Update player image to next image in animation.
     """
     def animate(self):
@@ -55,25 +56,36 @@ class Player(pygame.sprite.Sprite):
 
     """ Handle player movement according to button pressed.
     """
-    def handle_movement(self, move_dist=2):
+    def handle_movement(self, move_dist=2, jump_dist=20):
         keys = pygame.key.get_pressed()
         if keys[self.move_keys[0]]:  # Up
-            self.rect.y -= move_dist
-            self.cur_images = self.up_images
-            self.animation_interval = 0.1*FRAMERATE
-        elif keys[self.move_keys[1]]:  # Down
+            if not self.in_jump:
+                self.in_jump = 1
+            else:
+                self.in_jump += 1
+                if self.in_jump > 0.4*FRAMERATE:
+                    self.in_jump = 0
+
+            if self.in_jump < 0.2*FRAMERATE:
+                self.rect.y -= jump_dist
+                self.cur_images = self.up_images
+                self.animation_interval = 0.1*FRAMERATE
+        else:
+            self.in_jump = 0
+
+        if keys[self.move_keys[1]]:  # Down
             self.rect.y += move_dist
             self.cur_images = self.down_images
             self.animation_interval = 0.05*FRAMERATE
-        elif keys[self.move_keys[2]]:  # Left
+        if keys[self.move_keys[2]]:  # Left
             self.rect.x -= move_dist
             self.cur_images = self.left_images
             self.animation_interval = 0.05*FRAMERATE
-        elif keys[self.move_keys[3]]:  # Right
+        if keys[self.move_keys[3]]:  # Right
             self.rect.x += move_dist
             self.cur_images = self.right_images
             self.animation_interval = 0.05*FRAMERATE
-        else:
+        if not (keys[self.move_keys[0]] or keys[self.move_keys[1]] or keys[self.move_keys[2]] or keys[self.move_keys[3]]):
             self.cur_images = self.idle_images
             self.animation_interval = 0.15*FRAMERATE
 

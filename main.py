@@ -58,6 +58,12 @@ def init_gameboard():
         # Update all sprite animations/movement.
         all_sprites.update()
 
+        # Make player fall to bottom of screen.
+        for player in player_sprites:
+            player.rect.y += GRAVITY
+            if player.rect.y >= HEIGHT - player.rect.height:
+                player.rect.y = HEIGHT - player.rect.height
+
         # Check for collisions.
         for player in player_sprites:
             for apple in apple_sprites:
