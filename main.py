@@ -7,47 +7,55 @@ from player import Player
 from item import Item
 
 
-def main():
+""" Create n_players and add to all_sprites container.
+"""
+def add_players(all_sprites, n_players=1):
+    if n_players >= 1:
+        player = Player(500, 0)
+        all_sprites.add(player)
+
+    if n_players >= 2:
+        player2 = Player(0, 0, [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d])
+        all_sprites.add(player2)
+
+    if n_players >= 3:
+        player3 = Player(200, 0, [pygame.K_i, pygame.K_k, pygame.K_j, pygame.K_l])
+        all_sprites.add(player3)
+
+
+def init_gameboard():
     # Initialize game.
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Sicke game")
     clock = pygame.time.Clock()
 
-    # Initialize players.
-    player = Player(0, 0)
-    all_sprites = pygame.sprite.Group(player)
-
-    player2 = Player(500, 0, [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d])
-    all_sprites.add(player2)
-
-    player3 = Player(0, 500, [pygame.K_i, pygame.K_k, pygame.K_j, pygame.K_l])
-    all_sprites.add(player3)
+    # Create container that holds sprites and add players.
+    all_sprites = pygame.sprite.Group()
+    add_players(all_sprites, 3)
 
     # Main game loop.
     running = True
-
-    now = datetime.now()
-    now_plus_10 = now + timedelta(seconds = 2)
-
+    clock_timer = None
     while running:
-        now = datetime.now()
+        clock_now = datetime.now()
 
-        if now > now_plus_10:
-            print("2 seconds have passed")
-            now_plus_10 = now + timedelta(seconds = 2)
-
+        # Add apple every few seconds.
+        if clock_timer is None or clock_now >= clock_timer:
             apple = Item("item_img/apple.png")
             all_sprites.add(apple)
 
+            clock_timer = clock_now + timedelta(seconds = 8)
+
+        # Stop if quit event is received.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        player.update()
-        player2.update()
-        player3.update()
+        # Update all sprites in all_sprites container.
+        all_sprites.update()
 
+        # Redraw / update screen.
         screen.fill(WHITE)
         all_sprites.draw(screen)
         pygame.display.flip()
@@ -57,4 +65,4 @@ def main():
     pygame.quit()
 
 if __name__ == "__main__":
-    main()
+    init_gameboard()
