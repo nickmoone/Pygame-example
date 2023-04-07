@@ -10,17 +10,24 @@ from item import Item
 """ Create n_players and add to all_sprites container.
 """
 def add_players(all_sprites, n_players=1):
+    players = []
+
     if n_players >= 1:
         player = Player(500, 0)
         all_sprites.add(player)
+        players.append(player)
 
     if n_players >= 2:
         player2 = Player(0, 0, [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d])
         all_sprites.add(player2)
+        players.append(player2)
 
     if n_players >= 3:
         player3 = Player(200, 0, [pygame.K_i, pygame.K_k, pygame.K_j, pygame.K_l])
         all_sprites.add(player3)
+        players.append(player3)
+
+    return players
 
 
 def init_gameboard():
@@ -32,7 +39,9 @@ def init_gameboard():
 
     # Create container that holds sprites and add players.
     all_sprites = pygame.sprite.Group()
-    add_players(all_sprites, 3)
+
+    player_sprites = add_players(all_sprites, 3)
+    apple_sprites = []
 
     # Main game loop.
     running = True
@@ -44,6 +53,7 @@ def init_gameboard():
         if clock_timer is None or clock_now >= clock_timer:
             apple = Item("item_img/apple.png")
             all_sprites.add(apple)
+            apple_sprites.append(apple)
 
             clock_timer = clock_now + timedelta(seconds = 8)
 
