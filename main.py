@@ -70,7 +70,7 @@ def init_gameboard():
         # Add player name above player.
         for player in player_sprites:
             font = pygame.font.SysFont('arial', 16)
-            text = font.render(player.name, True, BLACK)
+            text = font.render(player.name + " ["+str(player.score)+"]", True, BLACK)
             text_rect = text.get_rect()
             text_rect.center = (player.rect.x+40, player.rect.y - 5)
             screen.blit(text, text_rect)
