@@ -77,9 +77,17 @@ def init_gameboard():
         # Make player fall to bottom of screen.
         for player in player_sprites:
             player.rect.y += GRAVITY
-            # Stop falling at platoformbar.
+            # Stop falling at platformbar.
             for platformbar in platformbar_sprites:
-                if pygame.sprite.collide_rect(player, platformbar):
+                # Make sprite that is a pixel at the bottom of the player position.
+                player_bottom = pygame.sprite.Sprite()
+                player_bottom.image = pygame.Surface((1, 1))
+                player_bottom.rect = player_bottom.image.get_rect()
+                player_bottom.rect.x = player.rect.x + player.rect.width/2
+                player_bottom.rect.y = player.rect.y + player.rect.height
+
+                # Check if player_bottom collides with platformbar, and stop falling.
+                if pygame.sprite.collide_rect(player_bottom, platformbar):
                     player.rect.y = platformbar.rect.y - player.rect.height
 
             # Stop falling at bottom.
