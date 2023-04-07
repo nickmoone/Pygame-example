@@ -32,7 +32,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = ypos
 
         # Set movement keys.
-        self.move_keys = move_keys
+        self.up_key = move_keys[0]
+        self.down_key = move_keys[1]
+        self.left_key = move_keys[2]
+        self.right_key = move_keys[3]
 
         # Set player stats.
         self.name = player_name
@@ -58,34 +61,35 @@ class Player(pygame.sprite.Sprite):
     """
     def handle_movement(self, move_dist=2, jump_dist=20):
         keys = pygame.key.get_pressed()
-        if keys[self.move_keys[0]]:  # Up
-            if not self.in_jump:
-                self.in_jump = 1
-            else:
-                self.in_jump += 1
-                if self.in_jump > 0.4*FRAMERATE:
-                    self.in_jump = 0
 
+        if keys[self.up_key]:  # Up
+            self.in_jump += 1
+
+            # Jump for 0.2 seconds.
             if self.in_jump < 0.2*FRAMERATE:
                 self.rect.y -= jump_dist
                 self.cur_images = self.up_images
                 self.animation_interval = 0.1*FRAMERATE
-        else:
-            self.in_jump = 0
 
-        if keys[self.move_keys[1]]:  # Down
+            # Only allow jump every 0.5 seconds.
+            if self.in_jump > 0.5*FRAMERATE:
+                self.in_jump = 0
+        else:
+            self.in_jump += 1
+
+        if keys[self.down_key]:  # Down
             self.rect.y += move_dist
             self.cur_images = self.down_images
             self.animation_interval = 0.05*FRAMERATE
-        if keys[self.move_keys[2]]:  # Left
+        if keys[self.left_key]:  # Left
             self.rect.x -= move_dist
             self.cur_images = self.left_images
             self.animation_interval = 0.05*FRAMERATE
-        if keys[self.move_keys[3]]:  # Right
+        if keys[self.right_key]:  # Right
             self.rect.x += move_dist
             self.cur_images = self.right_images
             self.animation_interval = 0.05*FRAMERATE
-        if not (keys[self.move_keys[0]] or keys[self.move_keys[1]] or keys[self.move_keys[2]] or keys[self.move_keys[3]]):
+        if not (keys[self.up_key] or keys[self.down_key] or keys[self.left_key] or keys[self.right_key]):  # Idle
             self.cur_images = self.idle_images
             self.animation_interval = 0.15*FRAMERATE
 
