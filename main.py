@@ -57,7 +57,7 @@ def init_gameboard():
         # Check for collisions.
         for player in player_sprites:
             for apple in apple_sprites:
-                if player.rect.colliderect(apple.rect):
+                if pygame.sprite.collide_rect_ratio(0.6)(player, apple):
                     apple_sprites.remove(apple)
                     all_sprites.remove(apple)
 
