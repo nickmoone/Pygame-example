@@ -4,7 +4,7 @@ from settings import *
 from helper import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, xpos=0, ypos=0, move_keys=[pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]):
+    def __init__(self, xpos=0, ypos=0, move_keys=[pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT], player_name=""):
         super().__init__()
         
         # Load all player animations.
@@ -34,6 +34,10 @@ class Player(pygame.sprite.Sprite):
 
         # Set movement keys.
         self.move_keys = move_keys
+
+        # Set player stats.
+        self.name = player_name
+        self.score = 0
 
     """ Update player image to next image in animation.
     """

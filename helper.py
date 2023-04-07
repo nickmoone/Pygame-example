@@ -1,9 +1,11 @@
 import pygame
 
+from settings import *
+
 """ Convert a spritesheet to a single frame image.
 """
 def get_spritesheet_frame(sheet, frame_nr, width, height, scale):
-    image = pygame.Surface((width, height), pygame.SRCALPHA).convert_alpha()
+    image = pygame.Surface((width, height), TRANSPARENT).convert_alpha()
     image.blit(sheet, (0,0), (frame_nr*width, 0, width, height))
     image = pygame.transform.scale(image, (width*scale, height*scale))
     return image
