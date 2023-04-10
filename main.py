@@ -96,7 +96,7 @@ def init_gameboard():
             if player.rect.y >= HEIGHT - player.rect.height:
                 player.rect.y = HEIGHT - player.rect.height
 
-        # Check for collisions.
+            # Check for collisions.
             for apple in apple_sprites:
                 if pygame.sprite.collide_rect_ratio(0.6)(player, apple):
                     player.score += 1
@@ -104,7 +104,7 @@ def init_gameboard():
                     apple_sprites.remove(apple)
                     all_sprites.remove(apple)
 
-        # Add player name above player.
+            # Add player name above player.
             font = pygame.font.SysFont('arial', 16)
             text = font.render(player.name + " ["+str(player.score)+"]", True, BLACK)
             text_rect = text.get_rect()
