@@ -74,8 +74,10 @@ def init_gameboard():
         # Update all sprite animations/movement.
         all_sprites.update()
 
-        # Make player fall to bottom of screen.
+        # Player update loop.
         for player in player_sprites:
+
+            # Make player fall to bottom of screen.
             player.rect.y += GRAVITY
             # Stop falling at platformbar.
             for platformbar in platformbar_sprites:
@@ -95,7 +97,6 @@ def init_gameboard():
                 player.rect.y = HEIGHT - player.rect.height
 
         # Check for collisions.
-        for player in player_sprites:
             for apple in apple_sprites:
                 if pygame.sprite.collide_rect_ratio(0.6)(player, apple):
                     player.score += 1
@@ -104,7 +105,6 @@ def init_gameboard():
                     all_sprites.remove(apple)
 
         # Add player name above player.
-        for player in player_sprites:
             font = pygame.font.SysFont('arial', 16)
             text = font.render(player.name + " ["+str(player.score)+"]", True, BLACK)
             text_rect = text.get_rect()
@@ -123,11 +123,6 @@ def init_gameboard():
         # Redraw/update screen.
         all_sprites.draw(screen)
         pygame.display.flip()
-
-        # Clear terminal and write score to terminal.
-        print("\033c", end="")
-        for player in player_sprites:
-            print(player.name, player.score)
 
         clock.tick(FRAMERATE)
 
