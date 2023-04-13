@@ -57,7 +57,7 @@ def init_gameboard():
     all_sprites = pygame.sprite.Group()
 
     player_sprites = add_players(all_sprites, 3)
-    apple_sprites = pygame.sprite.Group()
+    item_sprites = pygame.sprite.Group()
 
     # Add black bar sprite to middle of screen.
     platformbar_sprites = add_platformbars(all_sprites)
@@ -100,12 +100,12 @@ def init_gameboard():
                 player.rect.y = HEIGHT - player.rect.height
 
             # Check for collisions.
-            for apple in apple_sprites:
-                if pygame.sprite.collide_rect_ratio(0.6)(player, apple):
+            for item in item_sprites:
+                if pygame.sprite.collide_rect_ratio(0.6)(player, item):
                     player.score += 1
 
-                    apple_sprites.remove(apple)
-                    all_sprites.remove(apple)
+                    item_sprites.remove(item)
+                    all_sprites.remove(item)
 
             # Add player name above player.
             font = pygame.font.SysFont('arial', 16)
@@ -115,11 +115,27 @@ def init_gameboard():
             screen.blit(text, text_rect)
 
         clock_now = datetime.now()
-        # Add apple every few seconds.
+        # Add item every few seconds.
         if clock_timer is None or clock_now >= clock_timer:
             apple = Item("item_img/apple.png")
             all_sprites.add(apple)
-            apple_sprites.add(apple)
+            item_sprites.add(apple)
+
+            orange = Item("item_img/orange.png")
+            all_sprites.add(orange)
+            item_sprites.add(orange)
+
+            banana = Item("item_img/banana.png")
+            all_sprites.add(banana)
+            item_sprites.add(banana)
+
+            pineapple = Item("item_img/pineapple.png")
+            all_sprites.add(pineapple)
+            item_sprites.add(pineapple)
+
+            pear = Item("item_img/pear.png")
+            all_sprites.add(pear)
+            item_sprites.add(pear)
 
             clock_timer = clock_now + timedelta(seconds = 8)
 
