@@ -30,10 +30,13 @@ def add_players(all_sprites, n_players=1):
 
     return players
 
+
+""" Add platformbars where player can stand on to all_sprites container.
+"""
 def add_platformbars(all_sprites):
     platformbars = pygame.sprite.Group()
 
-    locations = [(0, 200), (0, 500), (0, 800), (734, 200), (734, 500), (734, 800)]
+    locations = [(0, 150), (0, 450), (0, 750), (734, 150), (734, 450), (734, 750), (360, 300), (360, 600)]
 
     for location in locations:
         platformbar = PlatformBar("platform_img/black_bar.png", location[0], location[1])
