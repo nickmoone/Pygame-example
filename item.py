@@ -4,7 +4,7 @@ import random
 from settings import *
 
 class Item(pygame.sprite.Sprite):
-    def __init__(self, image, xpos=0, ypos=0):
+    def __init__(self, image, xpos=0, ypos=0, points=1):
         super().__init__()
 
         self.image = pygame.image.load(image).convert_alpha()
@@ -13,3 +13,5 @@ class Item(pygame.sprite.Sprite):
 
         self.rect.x = random.randint(0, WIDTH)
         self.rect.y = random.randint(0, HEIGHT)
+
+        self.points = points

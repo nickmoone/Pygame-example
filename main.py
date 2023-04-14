@@ -102,7 +102,7 @@ def init_gameboard():
             # Check for collisions.
             for item in item_sprites:
                 if pygame.sprite.collide_rect_ratio(0.6)(player, item):
-                    player.score += 1
+                    player.score += item.points
 
                     item_sprites.remove(item)
                     all_sprites.remove(item)
@@ -117,25 +117,29 @@ def init_gameboard():
         clock_now = datetime.now()
         # Add item every few seconds.
         if clock_timer is None or clock_now >= clock_timer:
-            apple = Item("item_img/apple.png")
+            apple = Item("item_img/apple.png", points=1)
             all_sprites.add(apple)
             item_sprites.add(apple)
 
-            orange = Item("item_img/orange.png")
+            orange = Item("item_img/orange.png", points=2)
             all_sprites.add(orange)
             item_sprites.add(orange)
 
-            banana = Item("item_img/banana.png")
+            banana = Item("item_img/banana.png", points=4)
             all_sprites.add(banana)
             item_sprites.add(banana)
 
-            pineapple = Item("item_img/pineapple.png")
+            pineapple = Item("item_img/pineapple.png", points=5)
             all_sprites.add(pineapple)
             item_sprites.add(pineapple)
 
-            pear = Item("item_img/pear.png")
+            pear = Item("item_img/pear.png", points=3)
             all_sprites.add(pear)
             item_sprites.add(pear)
+
+            aubergine = Item("item_img/aubergine.png", points=-5)
+            all_sprites.add(aubergine)
+            item_sprites.add(aubergine)
 
             clock_timer = clock_now + timedelta(seconds = 8)
 
