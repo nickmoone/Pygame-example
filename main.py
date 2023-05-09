@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from datetime import datetime, timedelta
 
@@ -46,12 +47,22 @@ def add_platformbars(all_sprites):
     return platformbars
 
 
+""" Return a random item from the items list.
+"""
+def random_item(items):
+    image, score = items[random.randint(0, len(items) - 1)]
+    return Item(image, points=score)
+
+
 def init_gameboard():
     # Initialize game.
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Sicke game")
     clock = pygame.time.Clock()
+
+    # Items list containing item image path and score value.
+    items = [("item_img/apple.png", 1), ("item_img/orange.png", 2), ("item_img/banana.png", 4), ("item_img/pineapple.png", 5), ("item_img/pear.png", 3), ("item_img/eggplant.png", -5)]
 
     # Create container that holds sprites and add players.
     all_sprites = pygame.sprite.Group()
@@ -128,31 +139,11 @@ def init_gameboard():
         clock_now = datetime.now()
         # Add item every few seconds.
         if clock_timer is None or clock_now >= clock_timer:
-            apple = Item("item_img/apple.png", points=1)
-            all_sprites.add(apple)
-            item_sprites.add(apple)
+            item = random_item(items)
+            all_sprites.add(item)
+            item_sprites.add(item)
 
-            orange = Item("item_img/orange.png", points=2)
-            all_sprites.add(orange)
-            item_sprites.add(orange)
-
-            banana = Item("item_img/banana.png", points=4)
-            all_sprites.add(banana)
-            item_sprites.add(banana)
-
-            pineapple = Item("item_img/pineapple.png", points=5)
-            all_sprites.add(pineapple)
-            item_sprites.add(pineapple)
-
-            pear = Item("item_img/pear.png", points=3)
-            all_sprites.add(pear)
-            item_sprites.add(pear)
-
-            eggplant = Item("item_img/eggplant.png", points=-5)
-            all_sprites.add(eggplant)
-            item_sprites.add(eggplant)
-
-            clock_timer = clock_now + timedelta(seconds = 8)
+            clock_timer = clock_now + timedelta(seconds = 2)
 
         # Redraw/update screen.
         all_sprites.draw(screen)
