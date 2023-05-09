@@ -114,6 +114,17 @@ def init_gameboard():
             text_rect.center = (player.rect.x+40, player.rect.y - 5)
             screen.blit(text, text_rect)
 
+        # Add item score above items.
+        for item in item_sprites:
+            font = pygame.font.SysFont('arial', 16)
+            if item.points >= 0:
+                text = font.render("+"+str(item.points), True, BLACK)
+            else:
+                text = font.render(str(item.points), True, BLACK)
+            text_rect = text.get_rect()
+            text_rect.center = (item.rect.x+40, item.rect.y - 5)
+            screen.blit(text, text_rect)
+
         clock_now = datetime.now()
         # Add item every few seconds.
         if clock_timer is None or clock_now >= clock_timer:
@@ -137,9 +148,9 @@ def init_gameboard():
             all_sprites.add(pear)
             item_sprites.add(pear)
 
-            aubergine = Item("item_img/aubergine.png", points=-5)
-            all_sprites.add(aubergine)
-            item_sprites.add(aubergine)
+            eggplant = Item("item_img/eggplant.png", points=-5)
+            all_sprites.add(eggplant)
+            item_sprites.add(eggplant)
 
             clock_timer = clock_now + timedelta(seconds = 8)
 
